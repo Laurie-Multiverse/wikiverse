@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import apiURL from "../api";
 import { Tags } from './Tags';
 
-export const SinglePageView = ({ page, handleBack }) => {
+export const SinglePageView = ({ page, handleBack, handleDelete }) => {
   const [fullPage, setFullPage] = useState(null);
 
   useEffect(async () => {
@@ -39,6 +39,7 @@ export const SinglePageView = ({ page, handleBack }) => {
         {content}
       </article>
       <button onClick={handleBack}>Back to Wiki List</button>
+      <button onClick={ () => handleDelete(fullPage.slug) }>Delete Article</button>
     </>
   ) : (
     <h1>{page.title}</h1>

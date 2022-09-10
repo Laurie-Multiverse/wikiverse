@@ -57,12 +57,24 @@ export const App = () => {
         body: JSON.stringify( article )
       });
       const data = await response.json();
-      console.log("data", data);
       await fetchPages();
       setCreatingPage(false);
     } catch (err) {
       console.log("Error in handleSubmitPage: ", err);
     }
+  }
+
+  // when the delete article button is clicked
+  async function handleDelete(slug) {
+    {
+      const response = await fetch(`${apiURL}/wiki/${slug}`, {
+        method: "DELETE"
+      });
+      const data = await response.json();
+      await fetchPages();
+      setPage(null);
+    }
+
   }
 
   return (
@@ -71,7 +83,7 @@ export const App = () => {
         {creatingPage ? (
           <CreatePageView handleSubmitPage={handleSubmitPage}/>
         ) : page ? (
-          <SinglePageView page={page} handleBack={handleBack} />
+          <SinglePageView page={page} handleBack={handleBack} handleDelete={handleDelete}/>
         ) : (
           <MainView
             pages={pages}
