@@ -4,10 +4,12 @@ import React, { useState, useEffect } from "react";
 import apiURL from "../api";
 import { SinglePageView } from "./SinglePageView";
 import { MainView } from "./MainView";
+import { CreatePageView } from "./CreatePageView";
 
 export const App = () => {
   const [pages, setPages] = useState([]);
   const [page, setPage] = useState(null);
+  const [creatingPage, setCreatingPage] = useState(false);
 
   async function fetchPages() {
     try {
@@ -29,31 +31,56 @@ export const App = () => {
 
   // when a page is clicked in the list
   function selectPage(page) {
-    console.log("selected page", page);
     setPage(page);
   }
 
   // when the back button is clicked in Single Page View
   function handleBack() {
-    console.log("clicked back button");
     setPage(null);
+  }
+
+  // when the add page button is clicked in main view
+  function handleCreatePage() {
+    setCreatingPage(true);
+  }
+
+  // when the new page is submitted
+  async function handleSubmitPage(event, article) {
+    event.preventDefault();
+    console.log("TODO the create article posting");
+    try {
+      const response = await fetch(`${apiURL}/wiki`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify( article )
+      });
+      const data = await response.json();
+      console.log("data", data);
+      await fetchPages();
+      setCreatingPage(false);
+    } catch (err) {
+      console.log("Error in handleSubmitPage: ", err);
+    }
   }
 
   return (
     <>
-      {
-        <>
-          <main>
-            {page ? (
-              <SinglePageView page={page} handleBack={handleBack} />
-            ) : (
-              // <h1>Hello World</h1>
-              <MainView pages={pages} selectPage={selectPage} />
-            )}
-          </main>
-          <footer>© Wikiverse 2022.</footer>
-        </>
-      }
+      <main>
+        {creatingPage ? (
+          <CreatePageView handleSubmitPage={handleSubmitPage}/>
+        ) : page ? (
+          <SinglePageView page={page} handleBack={handleBack} />
+        ) : (
+          <MainView
+            pages={pages}
+            selectPage={selectPage}
+            handleCreatePage={handleCreatePage}
+          />
+        )}
+      </main>
+      <footer>© Wikiverse 2022.</footer>
     </>
   );
 };
