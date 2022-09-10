@@ -1,9 +1,11 @@
-import React from 'react';
+import React from "react";
 
-export const Page = (props) => {
-
-  return <>
-    <h3>{props.page.title}</h3>
-  </>
-} 
-	
+export const Page = ({page, selectPage}) => {
+  return (
+    <>
+      <h3 className="page-in-list" onClick={ () => selectPage(page)}>
+        {page.title}
+        </h3>
+    </>
+  );
+};

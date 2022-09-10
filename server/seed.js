@@ -19,6 +19,7 @@ const seed = async () => {
         createdPages[1].addTags([createdTags[0]]);
         createdPages[2].addTags([createdTags[1], createdTags[2]]);
         createdPages[3].addTags([createdTags[2],createdTags[3]]);
+        createdPages[4].addTags([createdTags[4]]);
 
         console.log("db populated!");
     } catch (error) {
