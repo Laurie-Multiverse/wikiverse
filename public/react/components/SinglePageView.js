@@ -1,36 +1,15 @@
-import React, { useEffect, useState } from "react";
-import apiURL from "../api";
+import React from "react";
 import { Tags } from './Tags';
 
-export const SinglePageView = ({ page, handleBack, handleDelete }) => {
-  const [fullPage, setFullPage] = useState(null);
-
-  useEffect(async () => {
-    try {
-      const response = await fetch(`${apiURL}/wiki/${page.slug}`);
-      const pageData = await response.json();
-      setFullPage(pageData);
-    } catch (err) {
-      console.log("Error in SinglePageView", err);
-    }
-  }, []);
-
+export const SinglePageView = ({ page, handleBack, handleDelete, handleEdit }) => {
 
   // format/shorten some info to display
   //
-  let title, author, content, tags, emailLink, createdAt, createdDate;
-  if (fullPage) {
-    title = fullPage.title;
-    author = fullPage.author;
-    content = fullPage.content;
-    tags = fullPage.tags;
-    createdAt = fullPage.createdAt;
-    emailLink = <a href={`mailto:${author.email}`}>{author.email}</a>
-    const date = new Date(createdAt); 
-    createdDate = date.toDateString();
-  }
+  const {title, author, content, tags, createdAt} = page;
+  const emailLink = <a href={`mailto:${author.email}`}>{author.email}</a>
+  const createdDate = (new Date(createdAt)).toDateString();
 
-  return fullPage ? (
+  return (
     <>
       <h1>{title}</h1>
       <p>by {author.name} {emailLink} {createdDate}</p>
@@ -38,10 +17,11 @@ export const SinglePageView = ({ page, handleBack, handleDelete }) => {
       <article className="single-page-view">
         {content}
       </article>
-      <button onClick={handleBack}>Back to Wiki List</button>
-      <button onClick={ () => handleDelete(fullPage.slug) }>Delete Article</button>
+      <div className="buttons">
+        <button onClick={handleBack}>Back to Wiki List</button>
+        <button onClick={ () => handleEdit() }>Edit Article</button>
+        <button onClick={ () => handleDelete(page) }>Delete Article</button>
+      </div>
     </>
-  ) : (
-    <h1>{page.title}</h1>
-  );
+  )
 };

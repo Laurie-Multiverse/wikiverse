@@ -37,7 +37,7 @@ article {
   font-size: 18px;
   padding: 5px;
   margin: 10px;
-  border-radius: 10%;
+  border-radius: 5px;
 }
 
 footer {
@@ -47,15 +47,20 @@ footer {
   bottom: 5px;
 }
 
+.buttons {
+  display: flex;
+}
+
 button {
   width: 150px;
   background-color: white;
-  border-radius: 10%;
+  border-radius: 5px;
   font-size: 15px;
   font-weight: bold;
   padding: 3px;
   margin-left: auto;
   margin-right: auto;
+  display: inline-block;
 }
 
 button:hover {

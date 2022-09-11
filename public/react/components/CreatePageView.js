@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export const CreatePageView = ({ handleSubmitPage }) => {
-  console.log("CreatePageView");
+// Can also use to update page if a page is provided
+export const CreatePageView = ({ page, handleSubmitPage }) => {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -15,9 +15,22 @@ export const CreatePageView = ({ handleSubmitPage }) => {
   const nameChange = (event) => setName(event.target.value);
   const emailChange = (event) => setEmail(event.target.value);
 
+  useEffect( () => {
+    // if a page is provided for us to update, then
+    // initialize fields from the provided page
+    if (page) {
+      setTitle(page.title);
+      setContent(page.content);
+      setName(page.author.name);
+      setEmail(page.author.email);
+      // setTags(page.tags); TODO
+    }
+  } , []);
+
+
   return (
     <>
-      <h1>Add an Article</h1>
+      <h1>{page ? 'Edit' : 'Add'} Article</h1>
       <br />
       <form onSubmit={(e) => 
         handleSubmitPage(e, {title, content, name, email, tags})}>

@@ -10,6 +10,7 @@ export const App = () => {
   const [pages, setPages] = useState([]);
   const [page, setPage] = useState(null);
   const [creatingPage, setCreatingPage] = useState(false);
+  const [editingPage, setEditingPage] = useState(false);
 
   async function fetchPages() {
     try {
@@ -30,8 +31,15 @@ export const App = () => {
   //
 
   // when a page is clicked in the list
-  function selectPage(page) {
-    setPage(page);
+  //   loads in more page data and replaces it in the state
+  async function selectPage(page) {
+    try {
+      const response = await fetch(`${apiURL}/wiki/${page.slug}`);
+      const pageData = await response.json();
+      setPage(pageData);
+    } catch (err) {
+      console.log("Error in SinglePageView", err);
+    }
   }
 
   // when the back button is clicked in Single Page View
@@ -43,11 +51,17 @@ export const App = () => {
   function handleCreatePage() {
     setCreatingPage(true);
   }
+  
+  // when the edit article button is clicked in single page view
+  async function handleEdit() {
+    // create the same view we use to create a page, but pre-populate it
+    setEditingPage(true);
+  }
+
 
   // when the new page is submitted
-  async function handleSubmitPage(event, article) {
+  async function handleCreatePage(event, article) {
     event.preventDefault();
-    console.log("TODO the create article posting");
     try {
       const response = await fetch(`${apiURL}/wiki`, {
         method: 'POST',
@@ -64,26 +78,55 @@ export const App = () => {
     }
   }
 
+    // when the edited page is submitted
+    async function handleUpdatePage(event, article) {
+      event.preventDefault();
+      try {
+        const response = await fetch(`${apiURL}/wiki/${page.slug}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify( article )
+        });
+        const data = await response.json();
+        await fetchPages();
+        setEditingPage(false);
+        setPage(data); // why doesn't this work TODO
+      } catch (err) {
+        console.log("Error in handleSubmitPage: ", err);
+      }
+    }
+  
+
   // when the delete article button is clicked
-  async function handleDelete(slug) {
+  async function handleDelete(page) {
     {
-      const response = await fetch(`${apiURL}/wiki/${slug}`, {
+      const response = await fetch(`${apiURL}/wiki/${page.slug}`, {
         method: "DELETE"
       });
       const data = await response.json();
       await fetchPages();
       setPage(null);
     }
-
   }
 
   return (
     <>
       <main>
         {creatingPage ? (
-          <CreatePageView handleSubmitPage={handleSubmitPage}/>
+          <CreatePageView handleSubmitPage={handleCreatePage}/>
+        ) : editingPage ? (
+          <CreatePageView 
+            page={page}
+            handleSubmitPage={handleUpdatePage}/>
         ) : page ? (
-          <SinglePageView page={page} handleBack={handleBack} handleDelete={handleDelete}/>
+          <SinglePageView 
+            page={page} 
+            handleBack={handleBack} 
+            handleDelete={handleDelete} 
+            handleEdit={handleEdit}
+          />
         ) : (
           <MainView
             pages={pages}
