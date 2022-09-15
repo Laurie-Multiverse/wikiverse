@@ -92,7 +92,7 @@ export const App = () => {
         const data = await response.json();
         await fetchPages();
         setEditingPage(false);
-        setPage(data); // why doesn't this work TODO
+        selectPage(data);
       } catch (err) {
         console.log("Error in handleSubmitPage: ", err);
       }

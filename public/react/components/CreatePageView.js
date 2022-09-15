@@ -36,15 +36,15 @@ export const CreatePageView = ({ page, handleSubmitPage }) => {
         handleSubmitPage(e, {title, content, name, email, tags})}>
 
         <label >Title:
-          <input type="text" value={title} size="100" onChange={titleChange} required/>
+          <input type="text" value={title} size="50" onChange={titleChange} required/>
         </label><br/>
 
         <label>Tags (optional):
-          <input type="text" value={tags} onChange={tagsChange} size="100"/>
+          <input type="text" value={tags} onChange={tagsChange} size="50"/>
         </label><br /><br/>
 
         <label>Paste article here:</label><br/>
-        <textarea rows="10" cols="120" value={content} onChange={contentChange} required/>
+        <textarea rows="10" cols="60" value={content} onChange={contentChange} required/>
         <br /><br />
 
         <hr /><br/>
